@@ -7,7 +7,7 @@ von der PEGELONLINE-API ab und speichert sie als CSV in data/pegel.csv.
 Anschliessend wird die Datawrapper-Karte neu publiziert (optional).
 
 Umgebungsvariablen (GitHub Secrets):
-  DW_API_KEY   – Datawrapper API-Schluessel
+  DATAWRAPPERPEGELKARTE   – Datawrapper API-Schluessel
   DW_CHART_ID  – ID der Datawrapper-Karte (z. B. "aBcDe")
 """
 
@@ -168,11 +168,11 @@ def exportiere(df: pd.DataFrame, pfad: Path) -> None:
 # ---------------------------------------------------------------------------
 
 def republiziere_datawrapper() -> None:
-    api_key  = os.environ.get("DW_API_KEY", "")
+    api_key  = os.environ.get("DATAWRAPPERPEGELKARTE", "")
     chart_id = os.environ.get("DW_CHART_ID", "")
 
     if not api_key or not chart_id:
-        print("[INFO] DW_API_KEY oder DW_CHART_ID nicht gesetzt – kein Republish.")
+        print("[INFO] DATAWRAPPERPEGELKARTE oder DW_CHART_ID nicht gesetzt – kein Republish.")
         return
 
     url = f"https://api.datawrapper.de/v3/charts/{chart_id}/publish"
