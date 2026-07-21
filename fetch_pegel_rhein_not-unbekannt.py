@@ -2,7 +2,7 @@
 fetch_pegel.py
 --------------
 Ruft aktuelle Pegelstaende binnenschifffahrtsrelevanter Wasserstrassen
-von der PEGELONLINE-API ab und speichert sie als CSV in data/pegel.csv.
+von der PEGELONLINE-API ab und speichert sie als CSV in data/pegel_rhein.csv.
 
 Anschliessend wird die Datawrapper-Karte neu publiziert (optional).
 
@@ -24,7 +24,7 @@ from pathlib import Path
 
 BASE_URL = "https://www.pegelonline.wsv.de/webservices/rest-api/v2"
 
-OUTPUT_PATH = Path("data/pegel.csv")
+OUTPUT_PATH = Path("data/pegel_rhein.csv")
 
 # ---------------------------------------------------------------------------
 # 1. Stationsdaten laden
