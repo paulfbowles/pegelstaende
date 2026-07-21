@@ -1,0 +1,48 @@
+name: Pegelstaende abrufen
+
+on:
+  schedule:
+    # Stündlich zur vollen Stunde (UTC)
+    - cron: '0 * * * *'
+  # Manueller Start über GitHub-UI möglich
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # damit der Action-Bot pushen darf
+
+    steps:
+      # 1. Repository auschecken
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Python einrichten
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Abhängigkeiten installieren
+      - name: Abhängigkeiten installieren
+        run: pip install requests pandas
+
+      # 4. Daten abrufen & CSV schreiben
+      - name: Pegelstaende abrufen
+        run: python fetch_pegel.py
+        env:
+          DW_API_KEY:  ${{ secrets.DATAWRAPPERPEGELKARTE }}
+          DW_CHART_ID: ${{ secrets.DW_CHART_ID_RHEIN }}
+
+      # 5. CSV ins Repository committen und pushen
+      #    (nur wenn sich die Datei tatsächlich geändert hat)
+      - name: CSV committen
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/pegel.csv
+          git diff --cached --quiet \
+            && echo "Keine Änderungen – kein Commit nötig." \
+            || git commit -m "chore: Pegelstaende aktualisiert $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
